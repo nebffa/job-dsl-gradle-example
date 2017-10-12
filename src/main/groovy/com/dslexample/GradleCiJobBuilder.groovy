@@ -2,44 +2,25 @@ package com.dslexample
 
 import javaposse.jobdsl.dsl.DslFactory
 import javaposse.jobdsl.dsl.Job
+import org.kohsuke.github.GitHub
 
 /**
  * Example Class for creating a Gradle build
  */
 class GradleCiJobBuilder {
 
-    String name
-    String description
-    String ownerAndProject
-    String gitBranch = 'master'
-    String pollScmSchedule = '@daily'
-    String tasks
-    String switches
-    Boolean useWrapper = true
-    String junitResults = '**/build/test-results/*.xml'
-    String artifacts = '**/build/libs/*.jar'
-    List<String> emails = []
+    void build(DslFactory dslFactory) {
 
-    Job build(DslFactory dslFactory) {
-        dslFactory.job(name) {
-            it.description this.description
-            logRotator {
-                numToKeep 5
-            }
-            scm {
-                github this.ownerAndProject, gitBranch
-            }
-            triggers {
-                scm pollScmSchedule
-            }
-            steps {
-                gradle tasks, switches, useWrapper
-            }
-            publishers {
-                archiveArtifacts artifacts
-                archiveJunit junitResults
-                if (emails) {
-                    mailer emails.join(' ')
+        def gh = GitHub.connect(
+                'nebffa',
+                'f2bd01ea99c14a4726640d43931474164f198106')
+        gh.getOrganization('vibrato').listRepositories().each { repo ->
+            dslFactory.job(repo.name) {
+                scm {
+                    gitHub(repo.fullName)
+                }
+                steps {
+                    // ...
                 }
             }
         }

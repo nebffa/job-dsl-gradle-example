@@ -26,8 +26,10 @@ configurations {
 configurations.all*.exclude group: 'xalan'
 
 dependencies {
+
     compile 'org.codehaus.groovy:groovy-all:2.4.8'
     compile "org.jenkins-ci.plugins:job-dsl-core:${jobDslVersion}"
+    compile 'org.kohsuke:github-api:1.70'
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'cglib:cglib-nodep:2.2.2' // used by Spock
@@ -77,6 +79,26 @@ task resolveTestPlugins(type: Copy) {
         new File(destinationDir, 'index').setText(baseNames.join('\n'), 'UTF-8')
     }
 }
+
+defaultTasks 'libs'
+
+configurations {
+    libs
+}
+
+dependencies {
+    libs 'org.kohsuke:github-api:1.70'
+}
+
+task cleanLibs(type: Delete) {
+    delete 'lib'
+}
+
+task libs(type: Copy) {
+    into 'lib'
+    from configurations.libs
+}
+
 
 test {
     dependsOn tasks.resolveTestPlugins
