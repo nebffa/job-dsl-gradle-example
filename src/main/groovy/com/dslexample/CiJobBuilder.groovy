@@ -12,7 +12,7 @@ class CiJobBuilder {
 
         def gh = GitHub.connect(
                 'nebffa',
-                'f2bd01ea99c14a4726640d43931474164f198106')
+                System.getenv('GITHUB_OAUTH_KEY'))
 
         dslFactory.folder('vibrato')
         def x = gh.getOrganization('vibrato').listRepositories(100).each { repo ->
