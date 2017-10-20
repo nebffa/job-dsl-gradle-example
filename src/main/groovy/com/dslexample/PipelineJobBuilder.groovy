@@ -4,6 +4,8 @@ import javaposse.jobdsl.dsl.DslFactory
 
 class PipelineJobBuilder {
     void build(DslFactory dslFactory) {
+        Helpers.out.println('Creating the pipeline jobs...')
+
         dslFactory.folder('pipelines')
         [1, 2, 3].each { index ->
             dslFactory.pipelineJob("pipelines/pipeline-${index}") {
@@ -20,6 +22,5 @@ class PipelineJobBuilder {
                 }
             }
         }
-
     }
 }
