@@ -1,9 +1,15 @@
-import com.dslexample.CiJobBuilder
+import com.dslexample.Helpers
+import com.dslexample.PipelineJobBuilder
+import com.dslexample.VibratoCiJobBuilder
 import javaposse.jobdsl.dsl.DslFactory
 
-// If you want, you can define your seed job in the DSL and create it via the REST API.
-// See https://github.com/sheehan/job-dsl-gradle-example#rest-api-runner
 
+// assign some things to a helper class so it's accessible elsewhere
+Helpers.readFileFromWorkspace = this.&readFileFromWorkspace
+Helpers.out = out
+
+
+// bootstrap the seed job
 job('seed') {
     scm {
         git('file:////Users/ben/work/talks/job-dsl-gradle-example', 'master')
@@ -25,6 +31,11 @@ lib/*.jar''')
     }
 }
 
+// build a job for every repository in the Vibrato GitHub team
+def jobBuilder = new VibratoCiJobBuilder()
+jobBuilder.build((DslFactory) this)
 
-def jobBuilder = new CiJobBuilder()
-jobBuilder.build((DslFactory) this, out)
+// build a few pipeline jobs
+def pipelinesJobBuilder = new PipelineJobBuilder()
+pipelinesJobBuilder.build((DslFactory) this)
+

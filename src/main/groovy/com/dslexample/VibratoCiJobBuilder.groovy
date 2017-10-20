@@ -3,19 +3,17 @@ package com.dslexample
 import javaposse.jobdsl.dsl.DslFactory
 import org.kohsuke.github.GitHub
 
-/**
- * Example Class for creating a Gradle build
- */
-class CiJobBuilder {
+class VibratoCiJobBuilder {
 
-    void build(DslFactory dslFactory, out) {
-
-        def gh = GitHub.connect(
+    void build(DslFactory dslFactory) {
+        def gitHub = GitHub.connect(
                 'nebffa',
                 System.getenv('GITHUB_OAUTH_KEY'))
 
+        Helpers.out.println('Creating the GitHub jobs...')
         dslFactory.folder('vibrato')
-        def x = gh.getOrganization('vibrato').listRepositories(100).each { repo ->
+        gitHub.getOrganization('vibrato')
+                .listRepositories(100).each { repo ->
             dslFactory.job( "vibrato/${repo.name}") {
                 scm {
 
