@@ -29,7 +29,7 @@ def pm = instance.getPluginManager()
 def uc = instance.getUpdateCenter()
 def initialized = false
 def logger = Logger.getLogger("")
-def pluginParameter="job-dsl git github gradle"
+def pluginParameter="job-dsl git github gradle cloudbees-folder workflow-aggregator"
 def plugins = pluginParameter.split()
 logger.info("" + plugins)
 plugins.each {
@@ -58,6 +58,12 @@ instance.save()
 instance.restart()
 "@
 
+$securityScript = @"
+import javaposse.jobdsl.plugin.GlobalJobDslSecurityConfiguration
+import jenkins.model.GlobalConfiguration
+GlobalConfiguration.all().get(GlobalJobDslSecurityConfiguration.class).useScriptSecurity=false
+"@
+
 
 
 New-Item -ItemType Directory -Path "~/.jenkins/init.groovy.d" -ErrorAction SilentlyContinue
@@ -66,6 +72,9 @@ $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding $False
 
 $filePath = Join-Path (Resolve-Path "~/.jenkins/init.groovy.d") "init.groovy"
 [System.IO.File]::WriteAllLines($filePath, $initScript, $Utf8NoBomEncoding)
+
+$filePath = Join-Path (Resolve-Path "~/.jenkins/init.groovy.d") "security.groovy"
+[System.IO.File]::WriteAllLines($filePath, $securityScript, $Utf8NoBomEncoding)
 
 $env:JAVA_OPTS = '-Djenkins.install.runSetupWizard=false'
 

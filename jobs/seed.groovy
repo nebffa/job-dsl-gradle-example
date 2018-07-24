@@ -9,29 +9,6 @@ import javaposse.jobdsl.dsl.DslFactory
 Helpers.readFileFromWorkspace = this.&readFileFromWorkspace
 Helpers.out = out
 
-
-// bootstrap the seed job
-job('seed') {
-    scm {
-        git('file:////Users/ben/work/talks/job-dsl-gradle-example', 'master')
-    }
-    steps {
-        gradle 'clean libs test'
-        dsl {
-            external 'jobs/**/*.groovy'
-            additionalClasspath('''src/main/groovy
-lib/*.jar''')
-            removeAction'DELETE'
-            removeViewAction 'DELETE'
-        }
-    }
-    publishers {
-        archiveJunit('build/test-results/**/*.xml') {
-            allowEmptyResults()
-        }
-    }
-}
-
 // build a job for every repository in the Vibrato GitHub team
 def jobBuilder = new VibratoCiJobBuilder()
 jobBuilder.build((DslFactory) this)
