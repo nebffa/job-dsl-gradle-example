@@ -29,7 +29,7 @@ def pm = instance.getPluginManager()
 def uc = instance.getUpdateCenter()
 def initialized = false
 def logger = Logger.getLogger("")
-def pluginParameter="job-dsl git github"
+def pluginParameter="job-dsl git github gradle"
 def plugins = pluginParameter.split()
 logger.info("" + plugins)
 plugins.each {
