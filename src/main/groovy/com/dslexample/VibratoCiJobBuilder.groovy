@@ -15,11 +15,14 @@ class VibratoCiJobBuilder {
         gitHub.getOrganization('vibrato')
                 .listRepositories(100).each { repo ->
             dslFactory.job( "vibrato/${repo.name}") {
+                parameters {
+                    stringParam("someParameterName")
+                }
                 scm {
 
                 }
                 steps {
-                    // ...
+
                 }
             }
         }
